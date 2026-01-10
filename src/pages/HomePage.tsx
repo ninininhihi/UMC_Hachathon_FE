@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import homeCat from '../assets/home_cat.png';
+import FloatingAddButton from '../components/FloatingAddButton';
 
 const PHRASES = [
     "오늘 하루도 고생 많았어요.",
@@ -28,7 +29,6 @@ const PHRASES = [
 
 export default function HomePage() {
     const { user } = useAuthStore();
-    const navigate = useNavigate();
     const [randomPhrase, setRandomPhrase] = useState('');
 
     useEffect(() => {
@@ -71,15 +71,9 @@ export default function HomePage() {
             </div>
 
             {/* Floating Action Button */}
-            <button
-                onClick={() => navigate('/add-post')}
-                className="absolute bottom-8 right-8 w-14 h-14 bg-gray-300 hover:bg-gray-400 transition-colors rounded-full flex items-center justify-center shadow-lg"
-                aria-label="Add Post"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-8 h-8 text-gray-700">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-            </button>
+            <div className="sticky bottom-8 w-full flex justify-end px-4 pointer-events-none mt-auto">
+                <FloatingAddButton className="pointer-events-auto shadow-xl bg-gray-300 hover:bg-gray-400 text-gray-700" />
+            </div>
         </div>
     );
 }

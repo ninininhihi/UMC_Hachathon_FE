@@ -26,7 +26,7 @@ const RootLayout = () => {
             <div className="max-w-[375px] h-screen mx-auto bg-white shadow-lg relative flex flex-col text-gray-800 md:hidden lg:flex overflow-hidden">
                 <header className="sticky top-0 z-10 p-4 bg-gray-50 border-b border-gray-200">
                     <nav>
-                        <h1 className="text-2xl font-semibold m-0 text-gray-800">Anxiety Community</h1>
+                        <h1 className="text-2xl font-semibold m-0 text-gray-800">해결캣</h1>
                     </nav>
                 </header>
 
