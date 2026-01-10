@@ -11,7 +11,8 @@ import OAuthCallback from '../pages/OAuthCallback';
 import NotFound from '../pages/NotFound';
 import CommunityPage from '../pages/CommunityPage';
 import MyActivityPage from '../pages/MyActivityPage';
-import CustomizePage from '../pages/CustomizePage';
+import SignupPage from '../pages/SignupPage';
+
 
 export const router = createBrowserRouter([
     {
@@ -58,14 +59,7 @@ export const router = createBrowserRouter([
                     </ProtectedRoute>
                 ),
             },
-            {
-                path: 'customize',
-                element: (
-                    <ProtectedRoute>
-                        <CustomizePage />
-                    </ProtectedRoute>
-                ),
-            },
+
             // {
             //     path: 'profile',
             //     element: (
@@ -85,6 +79,10 @@ export const router = createBrowserRouter([
             {
                 path: 'login',
                 element: <LoginPage />,
+            },
+            {
+                path: 'signup',
+                element: <SignupPage />,
             },
             {
                 path: 'oauth/callback',
