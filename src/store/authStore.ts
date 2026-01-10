@@ -7,8 +7,6 @@ interface AuthState {
     tokens: AuthTokens | null;
     isAuthenticated: boolean;
     setAuth: (user: User, tokens: AuthTokens) => void;
-    setUser: (user: User | null) => void;
-    setTokens: (tokens: AuthTokens | null) => void;
     logout: () => void;
 }
 
@@ -25,26 +23,10 @@ export const useAuthStore = create<AuthState>()(
                     tokens,
                     isAuthenticated: true,
                 });
+                // accessToken을 별도로 저장 (인터셉터에서 사용)
                 localStorage.setItem('accessToken', tokens.accessToken);
                 if (tokens.refreshToken) {
                     localStorage.setItem('refreshToken', tokens.refreshToken);
-                }
-            },
-
-            setUser: (user) => {
-                set({ user, isAuthenticated: !!user });
-            },
-
-            setTokens: (tokens) => {
-                set({ tokens });
-                if (tokens) {
-                    localStorage.setItem('accessToken', tokens.accessToken);
-                    if (tokens.refreshToken) {
-                        localStorage.setItem('refreshToken', tokens.refreshToken);
-                    }
-                } else {
-                    localStorage.removeItem('accessToken');
-                    localStorage.removeItem('refreshToken');
                 }
             },
 

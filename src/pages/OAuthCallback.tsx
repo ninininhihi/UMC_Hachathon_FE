@@ -14,24 +14,14 @@ const OAuthCallback = () => {
         const state = searchParams.get('state');
         const errorParam = searchParams.get('error');
 
-        // 에러가 있는 경우
-        if (errorParam) {
-            setError('로그인에 실패했습니다.');
+        if (errorParam || !code) {
+            setError(errorParam ? '로그인에 실패했습니다.' : '인증 코드를 받지 못했습니다.');
             setTimeout(() => navigate('/login'), 2000);
             return;
         }
 
-        // code가 없는 경우
-        if (!code) {
-            setError('인증 코드를 받지 못했습니다.');
-            setTimeout(() => navigate('/login'), 2000);
-            return;
-        }
-
-        // state에서 provider 확인
         const provider: SocialProvider = state === 'kakao' ? 'kakao' : 'naver';
 
-        // 소셜 로그인 콜백 처리
         handleSocialCallback(provider, code, state || undefined).then((result) => {
             if (result.success) {
                 navigate('/');
