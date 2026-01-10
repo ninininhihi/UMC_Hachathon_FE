@@ -75,7 +75,7 @@ export default {
 
                 // Status Color
                 status: {
-                    alert: '#F33328',
+                    alert: '#F33326',
                     caution: '#F4A340',
                     positive: '#41CC83',
                 },
@@ -95,6 +95,9 @@ export default {
                 white: '#FFFFFF',
                 black: '#000000',
             },
+            backgroundImage: {
+                'gradient-primary': 'linear-gradient(to bottom, #FFFFFF, #A7A8F0)'
+            }
         },
     },
     plugins: [],
