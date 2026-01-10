@@ -1,11 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 import RootLayout from '../layouts/RootLayout';
-
+import ProtectedRoute from '../components/ProtectedRoute';
 import HomePage from '../pages/HomePage';
-import SignupPage from '../pages/SignupPage';
-import CollectionPage from '../pages/CollectionPage';
-import CommunityPage from '../pages/CommunityPage';
-import DecoratePage from '../pages/DecoratePage';
+import LoginPage from '../pages/LoginPage';
+import FeedPage from '../pages/FeedPage';
 import PostDetailPage from '../pages/PostDetailPage';
 import AddPostPage from '../pages/AddPostPage';
 import OAuthCallback from '../pages/OAuthCallback';
@@ -18,31 +16,40 @@ export const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <HomePage />,
+                element: (
+                    <ProtectedRoute>
+                        <HomePage />
+                    </ProtectedRoute>
+                ),
             },
             {
-                path: 'collection',
-                element: <CollectionPage />,
-            },
-            {
-                path: 'community',
-                element: <CommunityPage />,
-            },
-            {
-                path: 'decorate',
-                element: <DecoratePage />,
+                path: 'feed',
+                element: (
+                    <ProtectedRoute>
+                        <FeedPage />
+                    </ProtectedRoute>
+                ),
             },
             {
                 path: 'post/:id',
-                element: <PostDetailPage />,
+                element: (
+                    <ProtectedRoute>
+                        <PostDetailPage />
+                    </ProtectedRoute>
+                ),
             },
+            
             {
                 path: 'add-post',
-                element: <AddPostPage />,
+                element: (
+                    <ProtectedRoute>
+                        <AddPostPage />
+                    </ProtectedRoute>
+                ),
             },
             {
-                path: 'signup',
-                element: <SignupPage />,
+                path: 'login',
+                element: <LoginPage />,
             },
             {
                 path: 'oauth/callback',
