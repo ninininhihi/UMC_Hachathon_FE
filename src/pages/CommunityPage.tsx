@@ -2,15 +2,27 @@ import { useState, useMemo } from 'react';
 import { dummyPosts } from '../data/dummyPosts';
 import { SolveStatus } from '../types/post';
 import { useNavigate } from 'react-router-dom';
+import FloatingAddButton from '../components/FloatingAddButton';
+import Button from '../components/Button';
+import CommentIcon from '../assets/community/comment_icon.svg?react';
+import HeartIcon from '../assets/community/heart_icon.svg?react';
+import SearchIcon from '../assets/community/search_icon.svg?react';
+import { useAuthStore } from '../store/authStore';
 
 type SortOption = 'LATEST' | 'LIKES' | 'COMMENTS';
 type FilterStatus = 'ALL' | 'SOLVED' | 'UNSOLVED';
 
 const CommunityPage = () => {
     const navigate = useNavigate();
+    const { user } = useAuthStore();
     const [filterStatus, setFilterStatus] = useState<FilterStatus>('ALL');
     const [sortBy, setSortBy] = useState<SortOption>('LATEST');
     const [searchKeyword, setSearchKeyword] = useState('');
+
+    const interestPosts = useMemo(() => {
+        if (!user?.interest) return [];
+        return dummyPosts.filter(post => post.category === user.interest).slice(0, 3);
+    }, [user]);
 
     const filteredAndSortedPosts = useMemo(() => {
         return dummyPosts
@@ -45,60 +57,103 @@ const CommunityPage = () => {
     }, [filterStatus, searchKeyword, sortBy]);
 
     return (
-        <div className="p-4 bg-white min-h-screen pb-20 relative">
-            <h1 className="text-2xl font-bold mb-6">지금, 불안한 이야기</h1>
+        <div className="p-4 bg-background min-h-screen pb-20 relative">
+            <h1 className="text-title-1 text-gray-900 mb-6">지금, 불안한 이야기</h1>
 
-            {/* Interest Cards (Placeholder based on image) */}
+            <h2 className="text-title-3 text-gray-900 mb-3">나의 관심사에 맞는 이야기</h2>
+            {/* Interest Cards */}
             <div className="flex gap-3 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-                {[1, 2, 3].map((i) => (
-                    <div key={i} className="min-w-[140px] h-[140px] bg-gray-200 rounded-lg flex items-center justify-center p-4 text-center text-sm font-medium text-gray-700 flex-shrink-0">
-                        나의 관심사에<br />맞는 게시글
+                {interestPosts.length > 0 ? (
+                    interestPosts.map((post) => (
+                        <div
+                            key={post.id}
+                            className="min-w-[140px] h-[140px] bg-white rounded-2xl p-4 flex flex-col justify-between shadow-sm flex-shrink-0 border border-gray-100 cursor-pointer hover:border-primary-400 transition-colors"
+                            onClick={() => navigate(`/post/${post.id}`)}
+                        >
+                            <p className="text-body-3 font-medium text-gray-900 text-left leading-relaxed line-clamp-3">
+                                {post.title}
+                            </p>
+                            <div className="flex justify-end gap-2">
+                                <div className="flex items-center gap-1">
+                                    <CommentIcon className="w-4 h-4" />
+                                    <span className="text-detail text-gray-500">{post.commentCount}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <HeartIcon className="w-4 h-4" />
+                                    <span className="text-detail text-gray-500">{post.likeCount}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="w-full text-center py-4 text-gray-500 text-body-3">
+                        관심사에 맞는 게시글이 없습니다.
                     </div>
-                ))}
+                )}
             </div>
 
             {/* Status Filter Buttons */}
-            <div className="flex gap-2 mb-4 overflow-x-auto scrollbar-hide">
-                <button
-                    onClick={() => setFilterStatus('ALL')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${filterStatus === 'ALL' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-700'}`}
-                >
-                    전체
-                </button>
-                <button
-                    onClick={() => setFilterStatus('UNSOLVED')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${filterStatus === 'UNSOLVED' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-700'}`}
-                >
-                    불안 해결책 필요
-                </button>
-                <button
-                    onClick={() => setFilterStatus('SOLVED')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${filterStatus === 'SOLVED' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-700'}`}
-                >
-                    해결된 게시글
-                </button>
+            <div className="flex gap-2 mb-4 overflow-x-auto scrollbar-hide px-1">
+                <div className="min-w-fit">
+                    <Button
+                        label="전체"
+                        onClick={() => setFilterStatus('ALL')}
+                        variant={filterStatus === 'ALL' ? 'primary' : 'outline'}
+                        size="sm"
+                        width="w-auto"
+                        className="px-4 py-2 rounded-lg"
+                    />
+                </div>
+                <div className="min-w-fit">
+                    <Button
+                        label="불안 해결책 필요"
+                        onClick={() => setFilterStatus('UNSOLVED')}
+                        variant={filterStatus === 'UNSOLVED' ? 'primary' : 'outline'}
+                        size="sm"
+                        width="w-auto"
+                        className="px-4 py-2 rounded-lg"
+                    />
+                </div>
+                <div className="min-w-fit">
+                    <Button
+                        label="불안 해결된 게시글"
+                        onClick={() => setFilterStatus('SOLVED')}
+                        variant={filterStatus === 'SOLVED' ? 'primary' : 'outline'}
+                        size="sm"
+                        width="w-auto"
+                        className="px-4 py-2 rounded-lg"
+                    />
+                </div>
             </div>
 
             {/* Search and Sort */}
             <div className="flex gap-2 mb-6">
-                <div className="flex-1 bg-gray-100 rounded-lg px-4 py-2 flex items-center">
+                <div className="flex-1 bg-white border border-gray-200 rounded-lg px-4 py-3 flex items-center gap-2">
+                    <SearchIcon className="w-5 h-5 text-gray-400" />
                     <input
                         type="text"
                         placeholder="키워드 기반 검색"
-                        className="bg-transparent w-full outline-none text-sm placeholder-gray-500"
+                        className="bg-transparent w-full outline-none text-body-5 placeholder-gray-400"
                         value={searchKeyword}
                         onChange={(e) => setSearchKeyword(e.target.value)}
                     />
                 </div>
-                <select
-                    className="bg-gray-200 rounded-lg px-3 py-2 text-sm font-medium outline-none"
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as SortOption)}
-                >
-                    <option value="LATEST">최신순</option>
-                    <option value="LIKES">공감순</option>
-                    <option value="COMMENTS">댓글순</option>
-                </select>
+                <div className="relative">
+                    <select
+                        className="appearance-none bg-gray-400 text-white rounded-lg pl-4 pr-8 py-3 text-body-3 font-medium outline-none cursor-pointer"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    >
+                        <option value="LATEST">최신순</option>
+                        <option value="LIKES">공감순</option>
+                        <option value="COMMENTS">댓글순</option>
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-white">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </div>
+                </div>
             </div>
 
             {/* Post List */}
@@ -107,27 +162,35 @@ const CommunityPage = () => {
                     filteredAndSortedPosts.map((post) => (
                         <div
                             key={post.id}
-                            className="flex bg-gray-100 p-4 rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"
+                            className="flex flex-col bg-white p-5 rounded-2xl shadow-sm cursor-pointer hover:bg-gray-50 transition-colors gap-3"
                             onClick={() => navigate(`/post/${post.id}`)}
                         >
-                            {/* Avatar Placeholder */}
-                            <div className="w-12 h-12 bg-gray-400 rounded-full mr-4 flex-shrink-0"></div>
+                            <div className="flex gap-3">
+                                {/* Avatar Placeholder */}
+                                <div className="w-10 h-10 bg-black rounded-full flex-shrink-0"></div>
 
-                            {/* Content */}
-                            <div className="flex-1 min-w-0">
-                                <h3 className="font-bold text-lg mb-1 truncate">{post.title}</h3>
-                                <p className="text-gray-600 text-sm line-clamp-2 mb-1">
-                                    {post.content}
-                                </p>
-                            </div>
+                                {/* Content */}
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-bold text-body-2 mb-1 truncate text-gray-900">{post.title}</h3>
+                                    <p className="text-gray-600 text-detail line-clamp-2 mb-2 leading-relaxed">
+                                        {post.content}
+                                    </p>
 
-                            {/* Right Side Info */}
-                            <div className="flex flex-col items-end justify-between ml-2 flex-shrink-0">
-                                <span className="text-xs text-gray-500">
-                                    {post.createdAt.split(' ')[1]}
-                                </span>
-                                <div className="bg-gray-300 text-xs px-2 py-1 rounded text-gray-700 font-medium">
-                                    공감 {post.likeCount} / 댓글 {post.commentCount}
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-detail text-gray-400">
+                                            10분 전 {/* Mock time for design match */}
+                                        </span>
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-1">
+                                                <CommentIcon className="w-4 h-4" />
+                                                <span className="text-detail text-gray-500">{post.commentCount}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <HeartIcon className="w-4 h-4" />
+                                                <span className="text-detail text-gray-500">{post.likeCount}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -140,12 +203,9 @@ const CommunityPage = () => {
             </div>
 
             {/* Floating Action Button */}
-            <button
-                onClick={() => navigate('/add-post')}
-                className="fixed bottom-20 right-4 w-14 h-14 bg-gray-600 rounded-full shadow-lg flex items-center justify-center text-white text-3xl font-light hover:bg-gray-700 transition-colors z-50"
-            >
-                +
-            </button>
+            <div className="sticky bottom-8 w-full flex justify-end px-4 pointer-events-none mt-auto">
+                <FloatingAddButton className="pointer-events-auto shadow-xl" />
+            </div>
         </div>
     );
 };
