@@ -5,7 +5,6 @@ import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import FeedPage from '../pages/FeedPage';
 import PostDetailPage from '../pages/PostDetailPage';
-import ProfilePage from '../pages/ProfilePage';
 import AddPostPage from '../pages/AddPostPage';
 import OAuthCallback from '../pages/OAuthCallback';
 import NotFound from '../pages/NotFound';
@@ -39,14 +38,7 @@ export const router = createBrowserRouter([
                     </ProtectedRoute>
                 ),
             },
-            {
-                path: 'profile',
-                element: (
-                    <ProtectedRoute>
-                        <ProfilePage />
-                    </ProtectedRoute>
-                ),
-            },
+            
             {
                 path: 'add-post',
                 element: (
@@ -70,4 +62,3 @@ export const router = createBrowserRouter([
         ],
     },
 ]);
-
