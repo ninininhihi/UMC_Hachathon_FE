@@ -133,8 +133,13 @@
 
 👉 [시연 영상 보러가기](https://octagonal-modem-20c.notion.site/2e46f0b09f0d80e3be71e17aaa9a098a?source=copy_link)
 
+## 발표자료
+
+👉 [불안.pdf](https://github.com/user-attachments/files/24614277/default.pdf)
+
 ---
 
 ## 📄 라이선스
 
 본 프로젝트는 해커톤 목적의 MVP로 제작되었습니다.
+
